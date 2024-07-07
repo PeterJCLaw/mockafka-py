@@ -4,8 +4,6 @@ version = "0.1.58"
 authors = ["alm0ra <ali.mrd318@gmail.com>"]
 repository = "https://github.com/alm0ra/mockafka-py"
 documentation = "https://mockafka-py.readthedocs.io/"
-
-
 description = "A mock library for confluent kafka"
 readme = "README.md"
 packages = [{ include = "mockafka" }]
