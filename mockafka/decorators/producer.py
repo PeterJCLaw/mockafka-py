@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from functools import wraps
+from typing import Callable
+
 from mockafka import FakeProducer
+from mockafka.decorators.typing import TCallable
 
 
-def produce(**decorator_args):
+def produce(**decorator_args) -> Callable[[TCallable], TCallable]:
     """
     A decorator for simulating message production using a FakeProducer.
 

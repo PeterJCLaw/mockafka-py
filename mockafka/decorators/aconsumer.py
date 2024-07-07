@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 from functools import wraps
+from typing import Callable
 
 from mockafka.aiokafka import FakeAIOKafkaConsumer
+from mockafka.decorators.typing import TCallable
 
 
-def aconsume(topics: list[str], auto_commit: bool = True):
+def aconsume(
+    topics: list[str],
+    auto_commit: bool = True,
+) -> Callable[[TCallable], TCallable]:
     """
     aconsume is a decorator for simulating async message consumption using a FakeAIOKafkaConsumer.
 

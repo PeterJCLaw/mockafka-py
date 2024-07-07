@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 from functools import wraps
+from typing import Callable
 
 from aiokafka.admin import NewTopic  # type: ignore[import-untyped]
 
 from mockafka.aiokafka import FakeAIOKafkaAdmin
-from mockafka.decorators.typing import TopicConfig
+from mockafka.decorators.typing import TCallable, TopicConfig
 
-def asetup_kafka(topics: list[TopicConfig], clean: bool = False):
+
+def asetup_kafka(
+    topics: list[TopicConfig],
+    clean: bool = False,
+) -> Callable[[TCallable], TCallable]:
     """
     asetup_kafka is a decorator for setting up mock Kafka topics using a FakeAIOKafkaAdminClient.
 

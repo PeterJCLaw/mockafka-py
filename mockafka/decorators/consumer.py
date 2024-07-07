@@ -1,10 +1,16 @@
 from __future__ import annotations
 
 from functools import wraps
+from typing import Callable
+
 from mockafka import FakeConsumer
+from mockafka.decorators.typing import TCallable
 
 
-def consume(topics: list[str], auto_commit: bool = True):
+def consume(
+    topics: list[str],
+    auto_commit: bool = True,
+) -> Callable[[TCallable], TCallable]:
     """
     A decorator for simulating message consumption using a FakeConsumer.
 
