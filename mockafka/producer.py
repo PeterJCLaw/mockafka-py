@@ -41,7 +41,6 @@ class FakeProducer(object):
             list[tuple[str, Optional[bytes]]],
             None,
         ] = None,
-        **kwargs,
     ) -> None:
         if isinstance(headers, dict):
             headers = list(headers.items())
@@ -51,11 +50,8 @@ class FakeProducer(object):
             value=_serialise(value, "value"),
             key=_serialise(key, "key"),
             partition=partition,
-            callback=callback,
-            on_delivery=on_delivery,
             timestamp=timestamp,
             headers=headers,
-            **kwargs,
         )
         self.kafka.produce(message=message, topic=topic, partition=partition)
 

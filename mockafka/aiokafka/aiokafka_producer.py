@@ -7,7 +7,7 @@ from aiokafka.util import create_future  # type: ignore[import-untyped]
 from typing_extensions import LiteralString, Self
 
 from mockafka.kafka_store import KafkaStore
-from mockafka.message import Message
+from mockafka.message import Message, HeadersList
 
 
 def _check_type(obj: object, name: LiteralString) -> None:
@@ -48,19 +48,16 @@ class FakeAIOKafkaProducer:
         value: Optional[bytes],
         key: Optional[bytes],
         partition: int,
-        timestamp_ms: Optional[int],
-        headers: Optional[list[tuple[str, Optional[bytes]]]] = None,
+        timestamp_ms: Optional[int] = None,
+        headers: Optional[HeadersList] = None,
     ) -> None:
-        _check_type(value, "value")
-        _check_type(key, "key")
-
         # create a message and call produce kafka
         message = Message(
             topic=topic,
             value=value,
             key=key,
             partition=partition,
-            timestamp_ms=timestamp_ms,
+            timestamp=timestamp_ms,
             headers=headers,
         )
         self.kafka.produce(message=message, topic=topic, partition=partition)
@@ -78,7 +75,7 @@ class FakeAIOKafkaProducer:
         key: Optional[bytes] = None,
         partition: int = 0,
         timestamp_ms: Optional[int] = None,
-        headers: Optional[list[tuple[str, Optional[bytes]]]] = None,
+        headers: Optional[HeadersList] = None,
     ) -> asyncio.Future[None]:
         await self._produce(
             topic=topic,
@@ -99,7 +96,7 @@ class FakeAIOKafkaProducer:
         key: Optional[bytes] = None,
         partition: int = 0,
         timestamp_ms: Optional[int] = None,
-        headers: Optional[list[tuple[str, Optional[bytes]]]] = None,
+        headers: Optional[HeadersList] = None,
     ) -> None:
         future = await self.send(
             topic=topic,

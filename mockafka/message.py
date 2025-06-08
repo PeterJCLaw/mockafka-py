@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Optional
+from typing import Optional
 
 from confluent_kafka import (  # type: ignore[import-untyped]
     TIMESTAMP_CREATE_TIME,
@@ -10,34 +10,48 @@ from confluent_kafka import (  # type: ignore[import-untyped]
     KafkaError,
 )
 
+HeadersList = list[tuple[str, Optional[bytes]]]
+
 
 class Message:
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self._headers: Optional[list[tuple[str, Optional[bytes]]]] = kwargs.get("headers", None)
-        self._key: Optional[bytes] = kwargs.get("key", None)
-        self._value: Optional[bytes] = kwargs.get("value", None)
-        self._topic: Optional[str] = kwargs.get("topic", None)
-        self._offset: Optional[int] = kwargs.get("offset", None)
-        self._error: Optional[KafkaError] = kwargs.get("error", None)
-        self._latency: Optional[float] = kwargs.get("latency", None)
-        self._leader_epoch: Optional[int] = kwargs.get("leader_epoch", None)
-        self._partition: Optional[int] = kwargs.get("partition", None)
-        self._timestamp: int = kwargs.get("timestamp") or int(time.time() * 1000)
-        self._timestamp_type = kwargs.get("timestamp_type", TIMESTAMP_CREATE_TIME)
-        self._broker_receive_time = kwargs.get("broker_receive_time") or int(
-            time.time() * 1000
-        )
+    def __init__(
+        self,
+        headers: Optional[HeadersList] = None,
+        key: Optional[bytes] = None,
+        value: Optional[bytes] = None,
+        topic: Optional[str] = None,
+        offset: Optional[int] = None,
+        error: Optional[KafkaError] = None,
+        latency: Optional[float] = None,
+        leader_epoch: Optional[int] = None,
+        partition: Optional[int] = None,
+        timestamp: Optional[int] = None,
+        timestamp_type: int = TIMESTAMP_CREATE_TIME,
+        broker_receive_time: Optional[int] = None,
+    ) -> None:
+        self._headers = headers
+        self._key = key
+        self._value = value
+        self._topic = topic
+        self._offset = offset
+        self._error = error
+        self._latency = latency
+        self._leader_epoch = leader_epoch
+        self._partition = partition
+        self._timestamp: int = timestamp or int(time.time() * 1000)
+        self._timestamp_type = timestamp_type
+        self._broker_receive_time = broker_receive_time or int(time.time() * 1000)
 
-    def offset(self, *args, **kwargs):
+    def offset(self, *args, **kwargs) -> Optional[int]:
         return self._offset
 
-    def latency(self, *args, **kwargs):
+    def latency(self, *args, **kwargs) -> Optional[float]:
         return self._latency
 
-    def leader_epoch(self, *args, **kwargs):
+    def leader_epoch(self, *args, **kwargs) -> Optional[int]:
         return self._leader_epoch
 
-    def headers(self) -> Optional[list[tuple[str, Optional[bytes]]]]:
+    def headers(self) -> Optional[HeadersList]:
         return self._headers
 
     def key(self, *args, **kwargs) -> Optional[bytes]:
@@ -56,13 +70,13 @@ class Message:
             ts_info = (self._timestamp_type, self._timestamp)
         return ts_info
 
-    def topic(self, *args, **kwargs):
+    def topic(self, *args, **kwargs) -> Optional[str]:
         return self._topic
 
-    def partition(self, *args, **kwargs):
+    def partition(self, *args, **kwargs) -> Optional[int]:
         return self._partition
 
-    def error(self):
+    def error(self) -> Optional[KafkaError]:
         return self._error
 
     def set_headers(self, *args, **kwargs):  # real signature unknown
